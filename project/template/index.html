@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Lookup</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #DFF2EB;
+            flex-direction: column;
+            
+        
+        .container {
+            width: 80%;
+            text-align: center;
+        }
+        /* Title Styling */
+        h2 {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .search-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 300px;
+        }
+        select {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 8px 16px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result-table {
+            margin-top: 20px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .result-table th, .result-table td {
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        .result-table th {
+            background-color: #007BFF;
+            color: white;
+        }
+        .result-table td {
+            background-color: #f9f9f9;
+        }
+        .result-container {
+            display: none; /* Hidden by default */
+        }
+    </style>
+</head>
+<body>
+    <!-- Title -->
+    <h1>Sub-domain & IP address</h1>
+
+    <div class="container">
+        <div class="search-container">
+            <!-- Enter Button first -->
+            <input id="searchQuery" class="search-bar" type="text" placeholder="Enter IP or Subdomain">
+            
+            <!-- Dropdown Button second -->
+            <select id="searchType" class="dropdown" onchange="changeSearchType()">
+                <option value="ip">IP Address</option>
+                <option value="subdomain">Subdomain</option>
+            </select>
+            
+            <!-- Search Button third -->
+            <button class="search-btn" onclick="search()">Search</button>
+        </div>
+
+        <table class="result-table">
+            <thead>
+                <tr>
+                    <th>Details</th>
+                    <th>Information</th>
+                </tr>
+            </thead>
+            <tbody id="resultBody"></tbody>
+        </table>
+    </div>
+
+    <script>
+        function changeSearchType() {
+            // Update the search query to be used for subdomain or IP based on dropdown selection
+            const searchType = document.getElementById('searchType').value;
+            const searchQuery = document.getElementById('searchQuery').value;
+
+            if (searchType === 'subdomain') {
+                // Handle subdomain search
+            } else {
+                // Handle IP address search
+            }
+        }
+
+        function search() {
+            const searchQuery = document.getElementById('searchQuery').value;
+            const searchType = document.getElementById('searchType').value;
+
+            if (searchType === 'ip') {
+                // Fetch IP details
+                fetch(`/search_ip?query=${searchQuery}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        displayIPResults(data);
+                    });
+            } else if (searchType === 'subdomain') {
+                // Handle subdomain lookup here (optional)
+            }
+        }
+
+        function displayIPResults(data) {
+            let resultBody = document.getElementById('resultBody');
+            resultBody.innerHTML = '';  // Clear previous results
+
+            if (data.error) {
+                resultBody.innerHTML = `<tr><td colspan="2">${data.error}</td></tr>`;
+                return;
+            }
+
+            // Dynamically populate the table with the returned data
+            let row = `
+                <tr>
+                    <td>IP Address</td>
+                    <td>${data.ip}</td>
+                </tr>
+                <tr>
+                    <td>City</td>
+                    <td>${data.city}</td>
+                </tr>
+                <tr>
+                    <td>Region</td>
+                    <td>${data.region}</td>
+                </tr>
+                <tr>
+                    <td>Country</td>
+                    <td>${data.country}</td>
+                </tr>
+                <tr>
+                    <td>Postal Code</td>
+                    <td>${data.postal_code}</td>
+                </tr>
+                <tr>
+                    <td>ISP</td>
+                    <td>${data.isp}</td>
+                </tr>
+                <tr>
+                    <td>ASN</td>
+                    <td>${data.asn}</td>
+                </tr>
+            `;
+            resultBody.innerHTML += row;
+        }
+    </script>
+</body>
+</html>
